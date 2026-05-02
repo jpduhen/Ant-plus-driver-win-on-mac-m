@@ -1,0 +1,35 @@
+; Compat INF variant for Tacx ANT+ USB dongle (VID_0FCF&PID_1008)
+; Uses USB class + MI-safe patterns some legacy apps expect.
+; Unsinged prototype only.
+
+[Version]
+Signature   = "$WINDOWS NT$"
+Class       = USB
+ClassGuid   = {36FC9E60-C465-11CF-8056-444553540000}
+Provider    = %ProviderName%
+DriverVer   = 05/02/2026,1.0.1.0
+PnpLockdown = 1
+
+[Manufacturer]
+%ProviderName% = DeviceList,NTarm64
+
+[DeviceList.NTarm64]
+%DeviceName% = WinUSB_Install,USB\VID_0FCF&PID_1008
+%DeviceName% = WinUSB_Install,USB\VID_0FCF&PID_1008&REV_0100
+
+[WinUSB_Install]
+Include = winusb.inf
+Needs   = WINUSB.NT
+AddReg  = Dev_AddReg
+
+[WinUSB_Install.Services]
+Include = winusb.inf
+Needs   = WINUSB.NT.Services
+
+[Dev_AddReg]
+; Some applications enumerate by interface GUID instead of class.
+HKR,,DeviceInterfaceGUIDs,0x10000,"{B6A0A2B1-8830-4A5D-8C71-3D6459EA4A07}"
+
+[Strings]
+ProviderName = "Tacx Community Prototype"
+DeviceName   = "Tacx ANT+ USB Dongle (WinUSB Compat)"
