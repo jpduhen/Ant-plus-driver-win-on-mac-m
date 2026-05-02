@@ -2,6 +2,15 @@
 
 Dit is een **eerste technische proef** om te testen of de Tacx T2018 dongle in jouw VM aanspreekbaar wordt zonder de oude kernel-driver.
 
+## Je huidige fout (Code 28)
+
+Als `pnputil /enum-devices /connected` toont:
+
+- `Class Name: Unknown`
+- `Problem Code: 28 (CM_PROB_FAILED_INSTALL)`
+
+...dan is er wel een device-match geprobeerd, maar de driverinstallatie is mislukt.
+
 ## Voorwaarden
 
 - Parallels USB passthrough staat op **Connect to Windows** voor de dongle.
@@ -16,30 +25,24 @@ Plaats deze bestanden op Windows, bijvoorbeeld in `C:\temp\tacx\`:
 - `tacx_winusb_arm64_compat.inf`
 - `manage_tacx_driver.ps1`
 
-## Snelste route: script gebruiken
+## Stap 1: oude mislukte prototype-installaties opruimen
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
 cd C:\temp\tacx
+.\manage_tacx_driver.ps1 -Action remove
+```
+
+## Stap 2: baseline installeren
+
+```powershell
 .\manage_tacx_driver.ps1 -Action install-a
 ```
 
-Als Tacx software nog niets ziet:
+## Stap 3: als Tacx software nog niets ziet, compat installeren
 
 ```powershell
 .\manage_tacx_driver.ps1 -Action install-b
-```
-
-Status bekijken:
-
-```powershell
-.\manage_tacx_driver.ps1 -Action status
-```
-
-Prototype drivers opruimen:
-
-```powershell
-.\manage_tacx_driver.ps1 -Action remove
 ```
 
 ## Handmatige fallback (zonder script)
@@ -56,13 +59,19 @@ Variant B:
 pnputil /add-driver C:\temp\tacx\tacx_winusb_arm64_compat.inf /install
 ```
 
-Controle:
+Status:
 
 ```bat
 pnputil /enum-devices /connected
 pnputil /enum-drivers
 ```
 
-## Als installatie geblokkeerd wordt
+## Als installatie nog steeds mislukt
+
+1. Open `C:\Windows\INF\setupapi.dev.log`.
+2. Zoek op `VID_0FCF&PID_1008`.
+3. Deel het laatste blok met `!!!` regels (dat geeft de exacte installfout).
+
+## Signing-opmerking
 
 Deze INF's zijn niet gesigneerd. Voor een proof-of-concept kun je testsigning gebruiken. In productie moet de driver officieel gesigneerd worden.
