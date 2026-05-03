@@ -7,6 +7,7 @@ Signature   = "$WINDOWS NT$"
 Class       = USB
 ClassGuid   = {36FC9E60-C465-11CF-8056-444553540000}
 Provider    = %ProviderName%
+CatalogFile = tacx_winusb_arm64_compat.cat
 DriverVer   = 05/02/2026,1.0.1.0
 PnpLockdown = 1
 

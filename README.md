@@ -10,6 +10,8 @@ Project om een Tacx ANT+ USB-dongle werkend te krijgen in Windows 11 ARM64 (Para
   - `driver_prototype/INSTALL_WINDOWS11_ARM64.md`
   - `driver_prototype/manage_tacx_driver.ps1`
   - `driver_prototype/COMMANDS_WINDOWS11_ARM64.md`
+  - `driver_prototype/SIGN_AND_INSTALL_WINDOWS11_ARM64.md`
+  - `driver_prototype/autosign_and_install.ps1`
 
 ## Driver-analyse
 
