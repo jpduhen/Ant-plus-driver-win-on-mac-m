@@ -58,3 +58,13 @@ Als `cmake` niet in PATH staat, gebruik de no-CMake fallback vanuit **Developer 
 cd C:\temp\tacx\bridge_skeleton
 .\build_bridge_windows_nocmake.ps1 -SourceDir C:\temp\tacx\bridge_skeleton -OutDir C:\temp\tacx\bridge_skeleton\build_nocmake
 ```
+
+
+### Als PowerShell script execution policy blokkeert
+
+Gebruik het `.cmd` alternatief (geen PowerShell policy nodig) vanuit **Developer Command Prompt for VS**:
+
+```bat
+cd /d C:\temp\tacx\bridge_skeleton
+build_bridge_windows_nocmake.cmd C:\temp\tacx\bridge_skeleton C:\temp\tacx\bridge_skeleton\build_nocmake
+```
