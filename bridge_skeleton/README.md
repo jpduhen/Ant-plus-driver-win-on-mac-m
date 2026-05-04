@@ -66,5 +66,23 @@ Gebruik het `.cmd` alternatief (geen PowerShell policy nodig) vanuit **Developer
 
 ```bat
 cd /d C:\temp\tacx\bridge_skeleton
-build_bridge_windows_nocmake.cmd C:\temp\tacx\bridge_skeleton C:\temp\tacx\bridge_skeleton\build_nocmake
+.\build_bridge_windows_nocmake.cmd C:\temp\tacx\bridge_skeleton C:\temp\tacx\bridge_skeleton\build_nocmake
+```
+
+
+PowerShell laadt geen lokale command files zonder `./` prefix; gebruik dus `./build_bridge_windows_nocmake.cmd` of `.\build_bridge_windows_nocmake.cmd`.
+
+
+## Stap 5: deploy en rollback
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass -Force
+cd C:\temp\tacx\bridge_skeleton
+.\deploy_bridge_dll.ps1 -BuiltDll C:\temp\tacx\bridge_skeleton\build_nocmake\ANT_WrappedLib.dll -TacxDir "C:\Program Files (x86)\Tacx\TacxTrainersoftware4"
+```
+
+Rollback:
+
+```powershell
+.\restore_original_dll.ps1 -TacxDir "C:\Program Files (x86)\Tacx\TacxTrainersoftware4"
 ```
