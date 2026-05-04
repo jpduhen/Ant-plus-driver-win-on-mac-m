@@ -18,7 +18,7 @@ if ($content -match '(?im)^\[ANT_LibUsb\.NT\]') {
   throw 'Expected section [ANT_LibUsb.NT] not found; patch script requires this section.'
 }
 
-$content += "`r`n[Tacx_DeviceInterface_AddReg]`r`nHKR,,DeviceInterfaceGUIDs,0x10000,\"{3C5E1462-5695-4E18-876B-F3F3D08AAF18}\"`r`n"
+$content += "`r`n[Tacx_DeviceInterface_AddReg]`r`n" + 'HKR,,DeviceInterfaceGUIDs,0x10000,"{3C5E1462-5695-4E18-876B-F3F3D08AAF18}"' + "`r`n"
 
 Set-Content -Path $InfPath -Value $content -NoNewline
 Write-Host "Patched: $InfPath" -ForegroundColor Green
