@@ -130,3 +130,21 @@ notepad C:\temp\tacx\diag_output.txt
 ```powershell
 .\diagnose_tacx_visibility.ps1 | Out-String | Set-Clipboard
 ```
+
+
+## Patch originele ANT_LibUsb.inf met Tacx GUID (indien ontbreekt)
+
+Als `ANT_LibUsb.inf` de GUID `{3c5e1462-5695-4e18-876b-f3f3d08aaf18}` niet bevat, patch hem dan eerst:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass -Force
+cd C:\temp\tacx
+.\patch_ant_libusb_inf.ps1 -InfPath C:\temp\tacx\ant_usb2_drivers\ANT_LibUsb.inf
+pnputil /add-driver C:\temp\tacx\ant_usb2_drivers\ANT_LibUsb.inf /install
+```
+
+Controle:
+
+```powershell
+reg query "HKLM\System\CurrentControlSet\Control\DeviceClasses\{3c5e1462-5695-4e18-876b-f3f3d08aaf18}" /s
+```
