@@ -178,3 +178,10 @@ cd C:\temp\tacx
 ```
 
 Dit staged alle `.inf` bestanden uit de bundle en forceert een re-enumeratie van de dongle.
+
+
+## Interpretatie: `Status: Error` na TacxDrivers/Jungo staging
+
+Als `install_tacxdrivers_bundle.ps1` eindigt met `FriendlyName: ANT USBStick2` en `Status: Error`, dan is dat meestal een teken dat de legacy Jungo driverstack niet native op ARM64 kan starten.
+
+In dat geval: terug naar werkende Dynastream/WinUSB binding voor basiscommunicatie en vervolg met bridge-plan (`NEXT_STEP_BRIDGE_PLAN.md`).

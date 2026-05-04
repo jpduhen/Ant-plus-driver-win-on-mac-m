@@ -55,3 +55,12 @@ Bridge-DLL doel:
 ## Verwacht resultaat
 
 Als Tacx de bridge-DLL accepteert, ziet de software de dongle zonder custom kernel-driver.
+
+
+## Nieuwe bevinding (Windows 11 ARM64, 2026-05-04)
+
+Bij staging van de volledige `TacxDrivers` bundle wordt de Jungo stack (`windrvr1230.inf`) wel aan de DriverStore toegevoegd, maar het ANT device eindigt in `Status: Error` na re-enumeratie.
+
+Dat wijst sterk op architectuurmismatch van de legacy Jungo kernel component (x86/x64) op ARM64.
+
+Gevolg: pure INF/PnP tweaks blijven waarschijnlijk onvoldoende; bridge-aanpak (user-space shim) is de meest realistische route.
