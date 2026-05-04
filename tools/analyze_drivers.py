@@ -3,25 +3,38 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parent.parent
-DRIVER_DIR = ROOT / "ant_usb2_drivers"
+DRIVER_DIR_CANDIDATES = [
+    ROOT / "ant_usb2_drivers",
+    ROOT / "TacxDrivers",
+]
 TARGET = ("0FCF", "1008")
 
 hwid_re = re.compile(r"USB\\VID_([0-9A-Fa-f]{4})&PID_([0-9A-Fa-f]{4})(?:&REV_([0-9A-Fa-f]{4}))?")
+provider_re = re.compile(r"^\s*Provider\s*=\s*(.+)$", re.IGNORECASE | re.MULTILINE)
+class_re = re.compile(r"^\s*Class\s*=\s*(.+)$", re.IGNORECASE | re.MULTILINE)
 
 
 def main() -> int:
-    if not DRIVER_DIR.exists():
-        print(f"[ERROR] Map ontbreekt: {DRIVER_DIR}")
-        print("Voeg de originele driverbestanden toe onder ant_usb2_drivers/{amd64,x86,ia64}.")
+    existing = [p for p in DRIVER_DIR_CANDIDATES if p.exists()]
+    if not existing:
+        print("[ERROR] Geen drivermappen gevonden.")
+        print("Voeg driverbestanden toe onder ant_usb2_drivers/ of TacxDrivers/.")
         return 1
 
-    inf_files = sorted(DRIVER_DIR.rglob("*.inf"))
+    inf_files = []
+    for d in existing:
+        inf_files.extend(sorted(d.rglob("*.inf")))
+
     if not inf_files:
-        print("[ERROR] Geen .inf bestanden gevonden in ant_usb2_drivers.")
+        print("[ERROR] Geen .inf bestanden gevonden in gevonden drivermappen.")
         return 1
 
     any_match = False
     print(f"[INFO] INF-bestanden gevonden: {len(inf_files)}")
+    print("[INFO] Gescande mappen:")
+    for d in existing:
+        print(f"  - {d}")
+
     for inf in inf_files:
         text = inf.read_text(errors="ignore")
         matches = hwid_re.findall(text)
@@ -29,7 +42,11 @@ def main() -> int:
             continue
 
         rel = inf.relative_to(ROOT)
+        provider = (provider_re.search(text).group(1).strip() if provider_re.search(text) else "?")
+        klass = (class_re.search(text).group(1).strip() if class_re.search(text) else "?")
         print(f"\n== {rel} ==")
+        print(f"  Provider: {provider}")
+        print(f"  Class   : {klass}")
         seen = set()
         for vid, pid, rev in matches:
             key = (vid.upper(), pid.upper(), (rev or "").upper())
@@ -47,6 +64,7 @@ def main() -> int:
     print("\n[RESULT]")
     if any_match:
         print("Doel hardware-ID (VID_0FCF/PID_1008) is gevonden in minstens één INF.")
+        print("Tip: vergelijk Providers (bijv. Dynastream/Jungo/Tacx) voor juiste runtime-stack.")
         return 0
     print("Doel hardware-ID niet gevonden. Waarschijnlijk verkeerde driverpakket of ontbrekende INF.")
     return 2

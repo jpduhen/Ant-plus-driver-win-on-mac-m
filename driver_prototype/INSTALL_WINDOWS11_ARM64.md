@@ -165,3 +165,16 @@ reg query "HKLM\System\CurrentControlSet\Control\DeviceClasses\{3c5e1462-5695-4e
 ```
 
 Dit is een pragmatische workaround om legacy software die alleen op key-bestaan checkt verder te laten gaan.
+
+
+## Probeer complete TacxDrivers bundle (incl. Jungo)
+
+Als `ANT_LibUsb` wel bindt maar Tacx software niets ziet, laat Windows de volledige TacxDrivers set evalueren:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass -Force
+cd C:\temp\tacx
+.\install_tacxdrivers_bundle.ps1 -DriverRoot C:\temp\tacx\TacxDrivers -InstanceId "USB\VID_0FCF&PID_1008\123"
+```
+
+Dit staged alle `.inf` bestanden uit de bundle en forceert een re-enumeratie van de dongle.
