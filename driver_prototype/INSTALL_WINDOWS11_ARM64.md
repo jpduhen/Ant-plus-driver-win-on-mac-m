@@ -151,3 +151,17 @@ reg query "HKLM\System\CurrentControlSet\Control\DeviceClasses\{3c5e1462-5695-4e
 
 
 > Note: some packages use `[LIBUSB_WIN32_DEV.NT]` instead of `[ANT_LibUsb.NT]`; the patch script now supports both patterns.
+
+
+## Fallback: maak DeviceClasses GUID key handmatig
+
+Als de GUID-key na INF-install nog ontbreekt, maak tijdelijk een compat-stub:
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass -Force
+cd C:\temp\tacx
+.\create_tacx_deviceclass_stub.ps1 -InstanceId "USB\VID_0FCF&PID_1008\123"
+reg query "HKLM\System\CurrentControlSet\Control\DeviceClasses\{3c5e1462-5695-4e18-876b-f3f3d08aaf18}" /s
+```
+
+Dit is een pragmatische workaround om legacy software die alleen op key-bestaan checkt verder te laten gaan.
