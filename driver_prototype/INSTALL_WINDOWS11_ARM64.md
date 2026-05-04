@@ -75,3 +75,21 @@ pnputil /enum-drivers
 ## Signing-opmerking
 
 Deze INF's zijn niet gesigneerd. Voor een proof-of-concept kun je testsigning gebruiken. In productie moet de driver officieel gesigneerd worden.
+
+
+## Driver geïnstalleerd maar Tacx software ziet niets
+
+Dit betekent meestal dat de app niet alleen op hardware-ID zoekt, maar op:
+
+- specifieke service/drivernaam
+- specifieke Device Interface GUID
+- of een legacy API-pad uit de originele Tacx/ANT stack
+
+Draai dan:
+
+```powershell
+cd C:\temp\tacx
+.\diagnose_tacx_visibility.ps1
+```
+
+Deel de output; dan kunnen we gericht aanpassen (bijv. interface GUID, service-binding of bridge-laag).
