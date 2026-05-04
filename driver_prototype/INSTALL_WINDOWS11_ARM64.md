@@ -148,3 +148,6 @@ Controle:
 ```powershell
 reg query "HKLM\System\CurrentControlSet\Control\DeviceClasses\{3c5e1462-5695-4e18-876b-f3f3d08aaf18}" /s
 ```
+
+
+> Note: some packages use `[LIBUSB_WIN32_DEV.NT]` instead of `[ANT_LibUsb.NT]`; the patch script now supports both patterns.
