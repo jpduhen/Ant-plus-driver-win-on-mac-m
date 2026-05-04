@@ -37,3 +37,14 @@ Daarna kunnen per functie echte implementaties toegevoegd worden.
 
 
 `generate_bridge_skeleton.py` accepteert zowel `dumpbin` output als een `one-name-per-line` exportlijst uit `extract_pe_exports.py`.
+
+
+## Stap 4: build de bridge DLL (Windows ARM64)
+
+```powershell
+Set-ExecutionPolicy -Scope Process Bypass -Force
+cd C:\temp\tacx\bridge_skeleton
+.\build_bridge_windows.ps1 -SourceDir C:\temp\tacx\bridge_skeleton -BuildDir C:\temp\tacx\bridge_skeleton\build -Config Release
+```
+
+Dit bouwt `ANT_WrappedLib.dll` in `build\Release\`.
