@@ -15,6 +15,8 @@ Project om een Tacx ANT+ USB-dongle werkend te krijgen in Windows 11 ARM64 (Para
   - `driver_prototype/diagnose_tacx_visibility.ps1`
   - `driver_prototype/NEXT_STEP_BRIDGE_PLAN.md`
   - `driver_prototype/STEP1_STEP2_COMMANDS.md`
+  - `driver_prototype/FIX_LIBUSB0_NOT_FOUND.md`
+  - `driver_prototype/fix_libusb_runtime.ps1`
 
 ## Driver-analyse
 
