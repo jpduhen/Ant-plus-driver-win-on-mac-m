@@ -5,11 +5,67 @@ Je foutmelding laat twee blokkades zien:
 1. `The third-party INF does not contain digital signature information` (pnputil blokkeert package).
 2. `No compatible drivers` bij handmatige wizard als ongesigneerde/onjuiste package wordt gescand.
 
-## Stap 0 — vereisten op Windows VM
+## Belangrijk: Secure Boot blokkeert `testsigning on`
 
-Installeer op Windows 11 ARM64:
-- Windows SDK (met `signtool.exe`)
-- Windows Driver Kit (met `inf2cat.exe`)
+Als je krijgt:
+
+- `An error has occurred setting the element data`
+- `The value is protected by Secure Boot policy`
+
+...dan moet je in Parallels **Secure Boot uitzetten** voor deze VM.
+
+Praktisch in Parallels (VM uitgeschakeld):
+
+1. Open VM Configuration.
+2. Check onder Security/Boot opties of **Secure Boot** aan staat en zet dit uit.
+3. Let op: in Parallels zorgt vTPM meestal automatisch voor Secure Boot; mogelijk moet TPM tijdelijk uit voor testsigning.
+4. Start VM opnieuw en probeer:
+
+```bat
+bcdedit /set testsigning on
+shutdown /r /t 0
+```
+
+## Stap 0 — SDK en WDK installeren (Windows 11 ARM64)
+
+### Windows SDK
+
+1. Open: https://learn.microsoft.com/windows/apps/windows-sdk/downloads
+2. Download de **Windows 11 SDK Installer**.
+3. Installeer met standaardopties (zorg dat `signtool.exe` beschikbaar komt).
+
+### Windows Driver Kit (WDK)
+
+1. Open: https://learn.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk
+2. Installeer WDK die hoort bij je SDK-versie.
+3. Open daarna een **Developer PowerShell/CMD** waar `inf2cat.exe` in PATH staat.
+
+### Snelle check tools
+
+```powershell
+where signtool
+where inf2cat
+```
+
+
+Als `inf2cat` niet herkend wordt:
+
+1. Open **x64 Native Tools / Developer Command Prompt** (SDK/WDK prompt).
+2. Of voeg tijdelijk PATH toe in PowerShell:
+
+```powershell
+$kitBin = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Directory | Sort-Object Name -Descending | Select-Object -First 1
+$env:Path += ';' + (Join-Path $kitBin.FullName 'x64')
+where inf2cat
+where signtool
+```
+
+3. Voor permanente PATH (nieuwe sessies):
+
+```powershell
+setx PATH "$($env:PATH);$($kitBin.FullName)\x64"
+```
+
 
 ## Stap 1 — test signing aanzetten en reboot
 
@@ -30,19 +86,14 @@ Admin PowerShell:
 $cert = New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=Tacx Test Driver" -CertStoreLocation "Cert:\LocalMachine\My"
 $pwd = ConvertTo-SecureString -String "TacxTest123!" -Force -AsPlainText
 Export-PfxCertificate -Cert $cert -FilePath C:\temp\tacx\tacx-test-signing.pfx -Password $pwd
+Export-Certificate -Cert $cert -FilePath C:\temp\tacx\tacx-test-signing.cer
 Import-Certificate -FilePath C:\temp\tacx\tacx-test-signing.cer -CertStoreLocation Cert:\LocalMachine\Root
 Import-Certificate -FilePath C:\temp\tacx\tacx-test-signing.cer -CertStoreLocation Cert:\LocalMachine\TrustedPublisher
 ```
 
-> Als `.cer` ontbreekt, eerst exporteren:
-
-```powershell
-Export-Certificate -Cert $cert -FilePath C:\temp\tacx\tacx-test-signing.cer
-```
-
 ## Stap 3 — catalogus genereren voor INF
 
-Admin CMD (pas pad aan naar jouw SDK/WDK versie):
+Admin CMD:
 
 ```bat
 cd /d C:\temp\tacx
@@ -67,15 +118,6 @@ pnputil /enum-drivers
 pnputil /enum-devices /connected
 ```
 
-## Stap 6 — als nog geen match
-
-Gebruik Device Manager > Update Driver > Browse > map `C:\temp\tacx` en deel daarna opnieuw:
-
-```powershell
-Select-String -Path C:\Windows\INF\setupapi.dev.log -Pattern "VID_0FCF&PID_1008" -Context 0,30
-```
-
-
 ## Snelle route: één script
 
 In **Admin PowerShell**:
@@ -86,4 +128,8 @@ cd C:\temp\tacx
 .\autosign_and_install.ps1 -DriverDir C:\temp\tacx -InstallCompat
 ```
 
-Dit script doet automatisch: cert maken, `.cat` genereren, signeren en installeren.
+## Als nog geen match
+
+```powershell
+Select-String -Path C:\Windows\INF\setupapi.dev.log -Pattern "VID_0FCF&PID_1008" -Context 0,30
+```

@@ -21,6 +21,20 @@ function Require-File([string]$Path) {
 function Find-Tool([string]$ToolName) {
     $cmd = Get-Command $ToolName -ErrorAction SilentlyContinue
     if ($cmd) { return $cmd.Source }
+
+    $searchRoots = @(
+        'C:\Program Files (x86)\Windows Kits\10\bin',
+        'C:\Program Files\Windows Kits\10\bin'
+    )
+
+    foreach ($root in $searchRoots) {
+        if (-not (Test-Path $root)) { continue }
+        $match = Get-ChildItem -Path $root -Recurse -Filter $ToolName -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending |
+            Select-Object -First 1
+        if ($match) { return $match.FullName }
+    }
+
     return $null
 }
 
@@ -29,8 +43,11 @@ Require-File $InfB
 
 $inf2cat = Find-Tool 'inf2cat.exe'
 $signtool = Find-Tool 'signtool.exe'
-if (-not $inf2cat) { throw 'inf2cat.exe niet gevonden. Installeer Windows Driver Kit (WDK) en open Developer PowerShell.' }
-if (-not $signtool) { throw 'signtool.exe niet gevonden. Installeer Windows SDK en open Developer PowerShell.' }
+if (-not $inf2cat) { throw 'inf2cat.exe niet gevonden. Installeer WDK of voeg Windows Kits bin-pad toe aan PATH.' }
+if (-not $signtool) { throw 'signtool.exe niet gevonden. Installeer Windows SDK of voeg Windows Kits bin-pad toe aan PATH.' }
+
+Write-Host "Gebruik inf2cat: $inf2cat" -ForegroundColor DarkGray
+Write-Host "Gebruik signtool: $signtool" -ForegroundColor DarkGray
 
 Write-Host '[1/6] Zelf-ondertekend certificaat maken...' -ForegroundColor Cyan
 $cert = New-SelfSignedCertificate -Type CodeSigningCert -Subject $CertSubject -CertStoreLocation 'Cert:\LocalMachine\My'
