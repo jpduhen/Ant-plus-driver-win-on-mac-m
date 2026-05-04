@@ -1,0 +1,37 @@
+; Prototype INF for Tacx ANT+ USB dongle (VID_0FCF&PID_1008)
+; Binds device to Microsoft's in-box WinUSB driver on Windows 11 ARM64.
+; NOTE: This INF is unsigned. For real deployment you need test-signing or proper signing.
+
+[Version]
+Signature   = "$WINDOWS NT$"
+Class       = USBDevice
+ClassGuid   = {88BAE032-5A81-49f0-BC3D-A4FF138216D6}
+Provider    = %ProviderName%
+CatalogFile = tacx_winusb_arm64.cat
+DriverVer   = 05/02/2026,1.0.0.0
+PnpLockdown = 1
+
+[Manufacturer]
+%ProviderName% = DeviceList,NTarm64
+
+[DeviceList.NTarm64]
+%DeviceName% = WinUSB_Install,USB\VID_0FCF&PID_1008
+%DeviceName% = WinUSB_Install,USB\VID_0FCF&PID_1008&REV_0100
+
+[WinUSB_Install]
+Include = winusb.inf
+Needs   = WINUSB.NT
+
+[WinUSB_Install.Services]
+Include = winusb.inf
+Needs   = WINUSB.NT.Services
+
+[WinUSB_Install.HW]
+AddReg = WinUSB_AddReg
+
+[WinUSB_AddReg]
+HKR,,DeviceInterfaceGUIDs,0x10000,"{0D2D6A5C-2A2F-4BA2-A7A0-6E4E4CCFE8B3}"
+
+[Strings]
+ProviderName = "Tacx Community Prototype"
+DeviceName   = "Tacx ANT+ USB Dongle (WinUSB)"
