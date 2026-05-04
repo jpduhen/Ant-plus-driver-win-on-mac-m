@@ -11,6 +11,10 @@ if (!(Test-Path (Join-Path $SourceDir 'CMakeLists.txt'))) { throw 'CMakeLists.tx
 if (!(Test-Path (Join-Path $SourceDir 'ant_bridge_stub.c'))) { throw 'ant_bridge_stub.c not found in SourceDir.' }
 if (!(Test-Path (Join-Path $SourceDir 'ant_bridge.def'))) { throw 'ant_bridge.def not found in SourceDir.' }
 
+if (!(Get-Command cmake -ErrorAction SilentlyContinue)) {
+  throw 'cmake not found. Install CMake or use build_bridge_windows_nocmake.ps1 from a VS Developer shell.'
+}
+
 cmake -S $SourceDir -B $BuildDir -A ARM64
 cmake --build $BuildDir --config $Config
 

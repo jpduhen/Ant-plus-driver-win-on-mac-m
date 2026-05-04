@@ -48,3 +48,13 @@ cd C:\temp\tacx\bridge_skeleton
 ```
 
 Dit bouwt `ANT_WrappedLib.dll` in `build\Release\`.
+
+
+### Zonder CMake
+
+Als `cmake` niet in PATH staat, gebruik de no-CMake fallback vanuit **Developer PowerShell for VS**:
+
+```powershell
+cd C:\temp\tacx\bridge_skeleton
+.\build_bridge_windows_nocmake.ps1 -SourceDir C:\temp\tacx\bridge_skeleton -OutDir C:\temp\tacx\bridge_skeleton\build_nocmake
+```
