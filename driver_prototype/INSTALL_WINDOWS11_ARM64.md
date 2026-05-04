@@ -85,11 +85,48 @@ Dit betekent meestal dat de app niet alleen op hardware-ID zoekt, maar op:
 - specifieke Device Interface GUID
 - of een legacy API-pad uit de originele Tacx/ANT stack
 
-Draai dan:
+Draai dan (met execution policy bypass voor deze sessie):
 
 ```powershell
+Set-ExecutionPolicy -Scope Process Bypass -Force
 cd C:\temp\tacx
 .\diagnose_tacx_visibility.ps1
 ```
 
+Als zelfs dat geblokkeerd wordt, run direct via powershell.exe:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\temp\tacx\diagnose_tacx_visibility.ps1
+```
+
+Optioneel (éénmalig) voor gedownloade scripts:
+
+```powershell
+Unblock-File C:\temp\tacx\diagnose_tacx_visibility.ps1
+```
+
 Deel de output; dan kunnen we gericht aanpassen (bijv. interface GUID, service-binding of bridge-laag).
+
+
+## PowerShell output kopiëren (als Ctrl+C niet werkt)
+
+In Windows Terminal/PowerShell wordt `Ctrl+C` gebruikt om een commando te stoppen, niet om te kopiëren.
+
+Gebruik één van deze opties:
+
+1. **Markeer met muis** en druk `Enter` (kopieert selectie).
+2. Rechtermuisknop op titelbalk > **Edit > Select All**, daarna `Enter`.
+3. Gebruik `Ctrl+Shift+C` (Windows Terminal).
+4. Schrijf output direct naar bestand en kopieer dat bestand:
+
+```powershell
+cd C:\temp\tacx
+.\diagnose_tacx_visibility.ps1 *> C:\temp\tacx\diag_output.txt
+notepad C:\temp\tacx\diag_output.txt
+```
+
+5. Of naar klembord met `clip`:
+
+```powershell
+.\diagnose_tacx_visibility.ps1 | Out-String | Set-Clipboard
+```

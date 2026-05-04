@@ -13,6 +13,8 @@ Project om een Tacx ANT+ USB-dongle werkend te krijgen in Windows 11 ARM64 (Para
   - `driver_prototype/SIGN_AND_INSTALL_WINDOWS11_ARM64.md`
   - `driver_prototype/autosign_and_install.ps1`
   - `driver_prototype/diagnose_tacx_visibility.ps1`
+  - `driver_prototype/NEXT_STEP_BRIDGE_PLAN.md`
+  - `driver_prototype/STEP1_STEP2_COMMANDS.md`
 
 ## Driver-analyse
 
@@ -26,3 +28,10 @@ python3 tools/analyze_drivers.py
 Deze checkt of de INF-bestanden de Tacx dongle hardware-ID bevatten (`USB\\VID_0FCF&PID_1008`).
 
 Zie `MIGRATION_PLAN.md` voor de technische aanpak.
+
+
+Extra diagnose-parser:
+
+```bash
+python3 tools/parse_diag_output.py
+```
