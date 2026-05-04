@@ -34,3 +34,6 @@ Dit maakt:
 
 De gegenereerde stubs retourneren standaard foutcodes en schrijven logging via `OutputDebugStringA`.
 Daarna kunnen per functie echte implementaties toegevoegd worden.
+
+
+`generate_bridge_skeleton.py` accepteert zowel `dumpbin` output als een `one-name-per-line` exportlijst uit `extract_pe_exports.py`.

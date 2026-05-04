@@ -8,12 +8,24 @@ EXPORT_RE = re.compile(r"^\s*\d+\s+[0-9A-F]+\s+[0-9A-F]+\s+([A-Za-z_][A-Za-z0-9_
 
 def parse_exports(text: str):
     exports = []
-    for line in text.splitlines():
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+
+        # dumpbin format
         m = EXPORT_RE.match(line)
         if m:
             name = m.group(1)
             if name not in exports:
                 exports.append(name)
+            continue
+
+        # plain one-name-per-line format (from extract_pe_exports.py)
+        if re.match(r"^[A-Za-z_][A-Za-z0-9_@?$]*$", line):
+            if line not in exports:
+                exports.append(line)
+
     return exports
 
 
