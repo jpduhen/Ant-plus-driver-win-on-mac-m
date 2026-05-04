@@ -140,7 +140,7 @@ Als `ANT_LibUsb.inf` de GUID `{3c5e1462-5695-4e18-876b-f3f3d08aaf18}` niet bevat
 Set-ExecutionPolicy -Scope Process Bypass -Force
 cd C:\temp\tacx
 .\patch_ant_libusb_inf.ps1 -InfPath C:\temp\tacx\ant_usb2_drivers\ANT_LibUsb.inf
-pnputil /add-driver C:\temp\tacx\ant_usb2_drivers\ANT_LibUsb.inf /install
+pnputil /add-driver C:\temp\tacx\ant_usb2_drivers\ANT_LibUsb_patched.inf /install
 ```
 
 Controle:
